@@ -9,12 +9,18 @@ import SwiftUI
 
 @main
 struct Zone2BeApp: App {
+    
+    let isLoggedIn = false
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            if isLoggedIn {
+                ContentView()
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            } else {
+                LoginSelectView()
+            }
         }
     }
 }
