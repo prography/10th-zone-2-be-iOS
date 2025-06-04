@@ -10,7 +10,11 @@ import AuthenticationServices
 
 struct LoginSelectView: View {
     
+    @State private var showAgreementSheet = false
+    @State private var navigateToBodyInfo = false
+    
     var body: some View {
+        NavigationStack {
             VStack(alignment: .leading, spacing: 40) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("가성비 있게 운동하기")
@@ -26,9 +30,9 @@ struct LoginSelectView: View {
                     LoginButton(imageName: "kakaoLogo", title: "카카오 로그인", action: {
                         print("카카오 로그인")
                     })
-                        .background(Color(hex: "#FAE24C"))
-                        .foregroundStyle(.black)
-                        .cornerRadius(8)
+                    .background(Color(hex: "#FAE24C"))
+                    .foregroundStyle(.black)
+                    .cornerRadius(8)
                     // 네이버 로그인
                     LoginButton(imageName: "naverLogo", title: "네이버 로그인", action: {
                         print("네이버 로그인")
@@ -54,7 +58,7 @@ struct LoginSelectView: View {
                     .cornerRadius(8)
                     
                     LoginButton(imageName: "googleLogo", title: "구글 로그인", action: {
-                        print("구글 로그인")
+                        onLoginTapped()
                     })
                     .background(Color.init(hex: "#ffffff"))
                     .foregroundStyle(.black)
@@ -66,15 +70,28 @@ struct LoginSelectView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .task {
-                let center = UNUserNotificationCenter.current()
-                do {
-                    try await center.requestAuthorization(options: [.alert, .sound, .badge])
-                } catch {
-                    // Handle the error here.
-                }
+            .navigationDestination(isPresented: $navigateToBodyInfo) {
+                BodyInfoInputView()
             }
-        Spacer()
+            Spacer()
+        }
+        .task {
+            let center = UNUserNotificationCenter.current()
+            do {
+                try await center.requestAuthorization(options: [.alert, .sound, .badge])
+            } catch {
+                // Handle the error here.
+            }
+        }
+        .sheet(
+            isPresented: $showAgreementSheet) {
+            AgreementBottomSheet(isPresented: $showAgreementSheet, confirmButtonDidTap: $navigateToBodyInfo)
+                .presentationCornerRadius(16)
+        }
+    }
+    
+    private func onLoginTapped() {
+            showAgreementSheet = true
     }
 }
 
