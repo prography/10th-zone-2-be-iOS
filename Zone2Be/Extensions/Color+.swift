@@ -35,6 +35,6 @@ extension Color {
     static let gray3 = Color(hex: "#D6DBE2")
     static let gray4 = Color(hex: "#9FA4A9")
     static let gray5 = Color(hex: "#70767C")
-    static let black = Color(hex: "#2C2D2D")
+    static let customBlack = Color(hex: "#2C2D2D")
     
 }

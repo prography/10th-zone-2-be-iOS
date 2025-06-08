@@ -8,13 +8,18 @@
 import SwiftUI
 
 struct BodyInfoInputView: View {
-    
     @Environment(\.dismiss) private var dismiss
     
-    @State private var birth = ""
-    @State private var height = ""
-    @State private var weight = ""
+    @Binding var isLoggedIn: Bool
+    
+    @State private var birth: String = ""
+    @State private var height: String = ""
+    @State private var weight: String = ""
     @State private var gender: String? = nil
+    @FocusState private var isTextFieldFocused: Bool
+    private var isFormComplete: Bool {
+        (birth.isEmpty == false) && (height.isEmpty == false) && (weight.isEmpty == false) && gender != nil
+    }
     
     
     var backButton : some View {  // <-- 👀 커스텀 버튼
@@ -36,31 +41,44 @@ struct BodyInfoInputView: View {
                     .foregroundColor(Color.gray5)
                 Spacer().frame(height: 44)
                 
-                Text("생년월일 *")
-                    .textStyle(.p2)
-                    .padding(.vertical, 3.5)
-                    .padding(.leading, 8)
+                HStack(spacing: 2) {
+                    Text("생년월일")
+                        .textStyle(.p2)
+                        .padding(.vertical, 3.5)
+                        .padding(.leading, 8)
+                    Text("*")
+                        .textStyle(.p2)
+                        .foregroundStyle(Color.brandColor)
+                }
                 Spacer()
                     .frame(height: 8)
                 TextField("생년월일 6자리를 입력해주세요.", text: $birth)
                     .textStyle(.p2)
                     .fontWeight(.semibold)
+                    .focused($isTextFieldFocused)
+                    .keyboardType(.numberPad)
                     .padding(.vertical, 13.5)
                     .padding(.leading, 16)
                     .overlay {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.gray3, lineWidth: 1)
                     }
+                    .onChange(of: birth) { oldValue, newValue in
+                        birth = newValue.count <= 6 ? newValue : oldValue
+                    }
+                    
                 Spacer()
                     .frame(height: 32)
                 Text("키(cm)")
                     .textStyle(.p2)
                     .padding(.vertical, 3.5)
                     .padding(.leading, 8)
+                    
                 Spacer()
                     .frame(height: 8)
                 TextField("키를 입력해주세요.", text: $height)
                     .textStyle(.p2)
+                    .keyboardType(.numberPad)
                     .fontWeight(.semibold)
                     .padding(.vertical, 13.5)
                     .padding(.leading, 16)
@@ -68,15 +86,20 @@ struct BodyInfoInputView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.gray3, lineWidth: 1)
                     }
+                    .onChange(of: height) { oldValue, newValue in
+                        height = newValue.count <= 3 ? newValue : oldValue
+                    }
                 Spacer()
                     .frame(height: 32)
-                Text("몸무게(kg)")
-                    .textStyle(.p2)
-                    .padding(.vertical, 3.5)
-                    .padding(.leading, 8)
+                    Text("몸무게(kg)")
+                        .textStyle(.p2)
+                        .padding(.vertical, 3.5)
+                        .padding(.leading, 8)
+                
                 Spacer()
                     .frame(height: 8)
                 TextField("몸무게를 입력해주세요.", text: $weight)
+                    .keyboardType(.numberPad)
                     .textStyle(.p2)
                     .fontWeight(.semibold)
                     .padding(.vertical, 13.5)
@@ -85,12 +108,20 @@ struct BodyInfoInputView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.gray3, lineWidth: 1)
                     }
+                    .onChange(of: weight) { oldValue, newValue in
+                        weight = newValue.count <= 3 ? newValue : oldValue
+                    }
                 Spacer()
                     .frame(height: 32)
-                Text("성별 *")
-                    .textStyle(.p2)
-                    .padding(.vertical, 3.5)
-                    .padding(.leading, 8)
+                HStack(spacing: 2) {
+                    Text("성별")
+                        .textStyle(.p2)
+                        .padding(.vertical, 3.5)
+                        .padding(.leading, 8)
+                    Text("*")
+                        .textStyle(.p2)
+                        .foregroundStyle(Color.brandColor)
+                }
                 Spacer()
                     .frame(height: 8)
                 HStack {
@@ -104,16 +135,17 @@ struct BodyInfoInputView: View {
                 Spacer()
                 Button(action: {
                     // 운동 시작 로직
+                    isLoggedIn = true
                 }) {
                     Text("운동 시작하기")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.gray.opacity(0.3))
+                        .background(isFormComplete ? Color.brandColor : Color.gray3)
+                        .foregroundStyle(.white)
                         .cornerRadius(8)
                 }
-                .disabled(true) // 입력값 검증 후 활성화 처리
+                .disabled(isFormComplete == false) // 입력값 검증 후 활성화 처리
                 .padding(.top, 32)
-
             }
             .padding()
         }
@@ -151,5 +183,5 @@ struct GenderButton: View {
 }
 
 #Preview {
-    BodyInfoInputView()
+    BodyInfoInputView(isLoggedIn: .constant(false))
 }

@@ -10,6 +10,7 @@ import AuthenticationServices
 
 struct LoginSelectView: View {
     
+    @Binding var isLoggedIn: Bool
     @State private var showAgreementSheet = false
     @State private var navigateToBodyInfo = false
     
@@ -71,7 +72,7 @@ struct LoginSelectView: View {
                 .padding(.horizontal, 20)
             }
             .navigationDestination(isPresented: $navigateToBodyInfo) {
-                BodyInfoInputView()
+                BodyInfoInputView(isLoggedIn: $isLoggedIn)
             }
             Spacer()
         }
@@ -96,5 +97,5 @@ struct LoginSelectView: View {
 }
 
 #Preview {
-    LoginSelectView()
+    LoginSelectView(isLoggedIn: .constant(false))
 }
