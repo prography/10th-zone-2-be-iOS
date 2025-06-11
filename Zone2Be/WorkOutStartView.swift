@@ -9,6 +9,8 @@ import SwiftUI
 
 struct WorkOutStartView: View {
     
+    @State var stack = NavigationPath()
+    
     struct Exercise: Identifiable, Hashable {
         let id = UUID()
         let title: String
@@ -27,7 +29,7 @@ struct WorkOutStartView: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $stack) {
             ScrollView {
                 VStack(alignment: .leading) {
                     Spacer()
@@ -69,7 +71,7 @@ struct WorkOutStartView: View {
                     }
                     .padding(.horizontal, 20)
                     .navigationDestination(for: Exercise.self) { exercise in
-                        WorkoutView()
+                        WorkoutView(stack: $stack)
                             .navigationBarBackButtonHidden(true)
                     }
                     Spacer()

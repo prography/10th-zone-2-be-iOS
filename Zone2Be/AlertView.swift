@@ -10,7 +10,7 @@ import SwiftUI
 struct AlertView: View {
     
     @Binding var showAlert: Bool
-    @Environment(\.dismiss) private var dismiss
+    var checkAction: () -> Void
 
     var body: some View {
         ZStack {
@@ -37,7 +37,7 @@ struct AlertView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     
                     Button(action: {
-                        dismiss()
+                        checkAction()
                     }) {
                         Text("운동 종료")
                             .padding()
@@ -56,10 +56,11 @@ struct AlertView: View {
             .padding(.horizontal, 20)
             .frame(maxWidth: .infinity)
         }
-        
     }
 }
 
 #Preview {
-    AlertView(showAlert: .constant(true))
+    AlertView(showAlert: .constant(true)) {
+        
+    }
 }

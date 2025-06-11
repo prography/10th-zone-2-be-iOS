@@ -104,8 +104,7 @@ struct ReportView: View {
                 
                 // MARK: - 날짜별 데이터
                 
-                VStack(alignment: .leading, spacing: 24) {
-                    
+                VStack(alignment: .leading) {
                     if activitiesByDate.isEmpty {
                         //운동 데이터가 존재하지 않을 경우
                         VStack {
@@ -128,16 +127,19 @@ struct ReportView: View {
                     } else {
                         ForEach(activitiesByDate, id: \.date) { day in
                                 //운동 데이터가
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(day.date)
-                                        .textStyle(.p3)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(Color.gray5)
-                                    ForEach(day.activities) { activity in
-                                        ActivityRow(activity: activity)
-                                            .padding(.vertical, 24)
-                                    }
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(day.date)
+                                    .textStyle(.p3)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(Color.gray5)
+                                ForEach(day.activities) { activity in
+                                    ActivityRow(activity: activity)
+                                        .padding(.vertical, 16)
+                                        .padding(.leading, 8)
+                                        
                                 }
+                            }
+                            .padding(.bottom, 16)
                         }
                     }
                 }
@@ -175,10 +177,14 @@ struct ActivityRow: View {
     
     var body: some View {
         HStack(spacing: 16) {
+            
+            // MARK: - 운동 이미지
             Image(activity.icon)
                 .resizable()
                 .frame(width: 24, height: 24)
                 .foregroundColor(activity.color)
+            
+            // MARK: - 운동 설명
             
             VStack(alignment: .leading, spacing: 4) {
                 Text("\(activity.name) ")
